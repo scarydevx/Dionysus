@@ -1,0 +1,50 @@
+.toast-container {
+    position: fixed;
+    bottom: 10px;
+    left: 10px;
+    z-index: 1006; 
+}
+
+.toast {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    border-radius: var(--borderRadius);
+    margin-top: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    color: var(--foregroundColor);
+    font-size: 13px;
+    animation: toast-rise 0.3s ease-out forwards;
+}
+
+.toast.info {
+    background-color: var(--saveButtonBg);
+}
+
+.toast.success {
+    background-color: #1c9749;
+}
+
+.toast.error {
+    background-color: #e11d48;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    color: var(--foregroundColor);
+    font-size: 16px;
+    margin-left: 10px;
+    cursor: pointer;
+}
+
+@keyframes toast-rise {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1; 
+    }
+}

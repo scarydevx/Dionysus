@@ -1,0 +1,74 @@
+[
+  {
+    "Id": 1,
+    "Title": "Stray",
+    "TimeInfo": "0h 39m",
+    "ImageUrl": "https://cdn2.steamgriddb.com/grid/0f80528cf7f241930d15c0900c5ab8ad.jpg",
+    "Location": "C:\\Users\\nazar\\Downloads\\Stray-InsaneRamZes\\Stray.exe",
+    "Arguments": null,
+    "LastRun": "10.11.2024 01:17"
+  },
+  {
+    "Id": 2,
+    "Title": "State of Decay 2: Juggernaut Edition",
+    "TimeInfo": "5h 35m",
+    "ImageUrl": "https://cdn2.steamgriddb.com/grid/0226542688e5dc36cf47b133ef4e7237.png",
+    "Location": "D:\\State of Decay 2 Juggernaut Edition\\StateOfDecay2\\Binaries\\Win64\\StateOfDecay2-Win64-Shipping.exe",
+    "Arguments": null,
+    "LastRun": null
+  },
+  {
+    "Id": 3,
+    "Title": "Days Gone",
+    "TimeInfo": "13h 12m",
+    "ImageUrl": "https://cdn2.steamgriddb.com/grid/107660be27ffff5053cf62439d061538.jpg",
+    "Location": "D:\\Games\\Days Gone\\BendGame\\Binaries\\Win64\\DaysGone.exe",
+    "Arguments": null,
+    "LastRun": null
+  },
+  {
+    "Id": 4,
+    "Title": "Euro Truck Simulator 2",
+    "TimeInfo": "31h 50m",
+    "ImageUrl": "https://cdn2.steamgriddb.com/grid/712e8661e581419d7186708b7be47a33.png",
+    "Location": "D:\\SteamLibrary\\steamapps\\common\\Euro Truck Simulator 2\\bin\\win_x64\\eurotrucks2.exe",
+    "Arguments": null,
+    "LastRun": null
+  },
+  {
+    "Id": 5,
+    "Title": "Dishonored",
+    "TimeInfo": "1h 13m",
+    "ImageUrl": "https://cdn2.steamgriddb.com/grid/cdcd545ab21376d35ccccf89637cbfb3.png",
+    "Location": "D:\\DishonoredDE\\Binaries\\Win64\\Dishonored.exe",
+    "Arguments": null,
+    "LastRun": null
+  },
+  {
+    "Id": 6,
+    "Title": "Dying Light",
+    "TimeInfo": "20h 30m",
+    "ImageUrl": "https://cdn2.steamgriddb.com/grid/795ced384fdcad15310b46841a6f145c.jpg",
+    "Location": "D:\\DyingLight\\DyingLightGame.exe",
+    "Arguments": null,
+    "LastRun": null
+  },
+  {
+    "Id": 7,
+    "Title": "Grand Theft Auto: San Andreas",
+    "TimeInfo": "10h 5m",
+    "ImageUrl": "https://cdn2.steamgriddb.com/grid/c4e954b93dc03b0f846db4051a1e6d25.png",
+    "Location": "D:\\Games\\Grand Theft Auto - San Andreas\\gta-sa.exe",
+    "Arguments": null,
+    "LastRun": null
+  },
+  {
+    "Id": 8,
+    "Title": "Farlight 84",
+    "TimeInfo": "12h 4m",
+    "ImageUrl": "https://cdn2.steamgriddb.com/grid/3da5a143559171de38f183ccc3b28d13.png",
+    "Location": "D:\\SteamLibrary\\steamapps\\common\\Farlight 84\\WindowsClient\\SolarlandClient.exe",
+    "Arguments": null,
+    "LastRun": null
+  }
+]

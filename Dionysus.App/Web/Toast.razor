@@ -1,0 +1,35 @@
+<div class="toast-container">
+    @if (IsVisible)
+    {
+    <div class="toast @ToastType">
+        <span>@Message</span>
+        <button @onclick="HideToast" class="close-btn">&times;</button>
+    </div>
+    }
+</div>
+
+@code {
+    public static Toast toast;
+    
+    [Parameter] public string Message { get; set; }
+
+    [Parameter] public string ToastType { get; set; } = "info";
+
+    private bool IsVisible { get; set; } = false;
+
+    public void ShowToast(string message, string type = "info", int duration = 3000)
+    {
+        Message = message;
+        ToastType = type;
+        IsVisible = true;
+        Task.Delay(duration).ContinueWith(_ => HideToast());
+        InvokeAsync(StateHasChanged);
+    }
+
+    private void HideToast()
+    {
+        IsVisible = false;
+        InvokeAsync(StateHasChanged);
+    }
+
+}

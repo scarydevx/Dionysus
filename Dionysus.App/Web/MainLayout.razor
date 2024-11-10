@@ -1,0 +1,52 @@
+@using System.Globalization
+@using Dionysus.App.Data
+@using Dionysus.App.Helpers
+@inherits LayoutComponentBase
+@inject NavigationManager NavigationManager
+
+<base href="@($"{AppDomain.CurrentDomain.BaseDirectory.Replace("\\", "/")}")" />
+<link href="pagesCSS/@SettingsPage._appTheme/ColorPalette.css" rel="stylesheet" />
+<link href="pagesCSS/Dionysus/SettingsPage.css" rel="stylesheet" />
+<link href="pagesCSS/Dionysus/LibraryPage.css" rel="stylesheet" />
+<link href="pagesCSS/Dionysus/HomePage.css" rel="stylesheet" />
+<link href="pagesCSS/Dionysus/Header.css" rel="stylesheet" />
+<link href="pagesCSS/Dionysus/Toast.css" rel="stylesheet" />
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+<div class="main-layout" style="position: sticky;top: 0;z-index: 1001;">
+    <nav>
+        <div class="header_top-panel">
+            <div>
+                <button class="header_top-panel-button fa-solid fa-cloud" style="font-size: 13px" @onclick="NavToHomePage"></button>
+            </div>
+            <div class="header_right-side">
+                <button class="header_top-panel-button user" style="width: fit-content" @onclick="NavToLibraryPage">
+                    <i class="fa-solid fa-id-card" style="margin-top: 2px"></i> &nbsp;@ProfileData.Profile().Username
+                </button>
+                <button class="header_top-panel-button user" style="margin-left: 10px" @onclick="NavToSettignsPage">
+                    <i class="fa-solid fa-gears" style="margin-top: 2px"></i>
+                </button>
+            </div>   
+        </div>
+    </nav>
+</div>
+<main>
+    @Body
+</main>
+@code
+{
+    void NavToHomePage()
+    {
+        NavigationManager.NavigateTo("/");
+    }
+    void NavToLibraryPage()
+    {
+        NavigationManager.NavigateTo("/library");
+    }
+
+    void NavToSettignsPage()
+    {
+        NavigationManager.NavigateTo("/settings");
+    }
+}

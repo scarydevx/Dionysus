@@ -1,0 +1,103 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+    <PropertyGroup>
+        <OutputType>WinExe</OutputType>
+        <TargetFramework>net8.0-windows</TargetFramework>
+        <Nullable>enable</Nullable>
+        <UseWindowsForms>true</UseWindowsForms>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <AssemblyName>Dionysus</AssemblyName>
+        <RootNamespace>Dionysus</RootNamespace>
+        <ApplicationIcon>icon.ico</ApplicationIcon>
+        <Version>2.5</Version>
+        <AssemblyVersion>2.5</AssemblyVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="craftersmine.SteamGridDB.Net" Version="1.1.7" />
+      <PackageReference Include="HtmlAgilityPack" Version="1.11.67" />
+      <PackageReference Include="Microsoft.AspNetCore.Components.WebView.WindowsForms" Version="8.0.91" />
+      <PackageReference Include="MonoTorrent" Version="3.0.0" />
+      <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="Web\wwwroot\index.html">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="Web\wwwroot\css\app.css">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="icon.ico">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="Web\wwwroot\pagesCSS\Dionysus\Header.css">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="Web\wwwroot\pagesCSS\Dionysus\LibraryPage.css">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="Web\wwwroot\pagesCSS\Dionysus\SettingsPage.css">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="Web\wwwroot\pagesCSS\Dionysus\ColorPalette.css">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="Web\wwwroot\pagesCSS\Dionysus\HomePage.css">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="Web\wwwroot\pagesCSS\Dionysus\Toast.css">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Update="env.json">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Update="Localization\strings.uk.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>strings.uk.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+      <EmbeddedResource Update="Localization\strings.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>strings.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+      <EmbeddedResource Update="Localization\strings.de.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>strings.de.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+      <EmbeddedResource Update="Localization\strings.fr.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>strings.fr.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="Localization\strings.uk.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>strings.uk.resx</DependentUpon>
+      </Compile>
+      <Compile Update="Localization\strings.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>strings.resx</DependentUpon>
+      </Compile>
+      <Compile Update="Localization\strings.de.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>strings.de.resx</DependentUpon>
+      </Compile>
+      <Compile Update="Localization\strings.fr.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>strings.fr.resx</DependentUpon>
+      </Compile>
+    </ItemGroup>
+
+
+</Project>

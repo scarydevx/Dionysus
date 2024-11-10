@@ -1,0 +1,227 @@
+@page "/settings"
+@using System.Globalization
+@using System.Reflection
+@using Dionysus.App
+@using Dionysus.App.Data
+@using Dionysus.App.Helpers
+@using Dionysus.App.Logger
+@using Dionysus.App.Models
+@using Dionysus.Localization
+@using Dionysus.WebScrap.FitGirlScrapper
+@using Dionysus.WebScrap.GOGScrapper
+@using Dionysus.WebScrap.XatabScrapper
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.VisualBasic
+@using Microsoft.VisualBasic.ApplicationServices
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+<link href="https://fonts.cdnfonts.com/css/cascadia-code" rel="stylesheet">
+<Toast @ref="Toast.toast" />
+
+@{
+    Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(SettingsPage._appLanguage);
+}
+
+<div class="settingsPage_panel">
+    <label class="settingsPage_settingLabel">
+        <span>
+            @Localization.strings.SettingsPage_SourcesLabel:<br/><br/>
+            GOG - <i class="@GOGStatusIcon" style="color: @(GOGStatus.Contains("circle-check") ? "#7ce38b" : "#fa7970")"></i><br/>
+        Xatab - <i class="@XatabStatusIcon" style="color: @(XatabStatus.Contains("circle-check") ? "#7ce38b" : "#fa7970")"></i><br/>
+        FitGirl - <i class="@FitGirlStatusIcon" style="color: @(FitGirlStatus.Contains("circle-check") ? "#7ce38b" : "#fa7970")"></i>
+        </span>
+        <button class="settingsPage_button" style="width: fit-content;" @onclick="CheckSources">
+            <i class="fa-solid fa-arrow-rotate-left"></i> @Localization.strings.SettingsPage_CheckSources
+        </button><br/>
+    </label>
+    <div class="settingsPage_separator">@Localization.strings.SettingsPage_ProfileSeparator</div>
+    <div class="settingsPage_settingLabel" style="flex-direction: column">
+        <span>@Localization.strings.SettingsPage_ProfileImageLabel:</span><br/>
+        <button class="settingsPage_button" style="width: 48%;" @onclick="@ProfileData.SelectImage">
+            <i class="fa-solid fa-image"></i> @Localization.strings.SettingsPage_SelectImage
+        </button><br/>
+        <span>@Localization.strings.SettingsPage_UsernameLabel:</span><br/>
+        <input class="settingsPage_button input" style="width: 48%; text-align: center; font-size: 13px" @bind="@ProfileData.Profile().Username"
+               placeholder="@Localization.strings.SettingsPage_UsernamePlaceholder">
+    </div>
+    <div class="settingsPage_separator">@Localization.strings.SettingsPage_ApplicationSeparator</div>
+
+    <div class="settingsPage_settingLabel">
+        <span>@Localization.strings.SettingsPage_ThemeLabel:</span>
+        <select class="settingsPage_button selector" @bind="_appTheme">
+            @foreach (var theme in ThemesManager.GetThemes())
+            {
+                <option value="@(theme.Split("\\").Last())"
+                        selected="@(theme.Split("\\").Last() == _appTheme)">
+                    @theme.Split("\\").Last()
+                </option>
+            }
+        </select>
+    </div>
+
+    <div class="settingsPage_settingLabel">
+        <span>@Localization.strings.SettingsPage_LanguageLabel:</span>
+        <select class="settingsPage_button selector" @bind="_appLanguage">
+            @foreach (var lang in LocalizationManager._isoLangs)
+            {
+                <option value="@lang.Value"
+                        selected="@(lang.Value == _appLanguage)">
+                    @lang.Key
+                </option>
+            }
+        </select>
+    </div>
+    
+    <label class="settingsPage_settingLabel">
+        <span>@Localization.strings.SettingsPage_AddToStartup</span>
+        <div class="settingsPage_custom-checkbox @(AddToStartup ? "checked" : "")" @onclick="ToggleAddToStartup"></div>
+    </label>
+    <div class="settingsPage_separator">@Localization.strings.SettingsPage_LibrarySeparator</div>
+    <label class="settingsPage_settingLabel">
+        <span>@Localization.strings.SettingsPage_ShowLastRunTime</span>
+        <div class="settingsPage_custom-checkbox @(ShowLastRunTime ? "checked" : "")" @onclick="ToggleShowLastRunTime"></div>
+    </label>
+    <label class="settingsPage_settingLabel">
+        <span>@Localization.strings.SettingsPage_ShowGameTitle</span>
+        <div class="settingsPage_custom-checkbox @(ShowGameTitle ? "checked" : "")" @onclick="ToggleShowGameTitle"></div>
+    </label>
+
+    <label class="settingsPage_settingLabel">
+        <span>@Localization.strings.SettingsPage_AutoBackup</span>
+        <div class="settingsPage_custom-checkbox @(AutoBackup ? "checked" : "")" @onclick="ToggleAutobackup"></div>
+    </label>
+
+    <div class="settingsPage_settingLabel">
+        <div style="width: 100%; display: flex; justify-content: space-between;">
+            <button class="settingsPage_button" style="width: 48%" @onclick="MakeBackup"><i class="fa-solid fa-folder-plus"></i> @Localization.strings.SettingsPage_MakeBackup</button>
+            @if (File.Exists(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data/games.json.bak")))
+            {
+                <button class="settingsPage_button" style="width: 48%" @onclick="RestoreBackup"><i class="fa-solid fa-clock-rotate-left"></i> @Localization.strings.SettingsPage_RestoreBackup</button>
+            }
+        </div>
+    </div>
+
+    <div class="settingsPage_separator">@Localization.strings.SettingsPage_TorrentSeparator</div>
+    <label class="settingsPage_settingLabel">
+        <span>@Localization.strings.SettingsPage_Setting4</span>
+        <div class="settingsPage_custom-checkbox @(AvoidConvertToMagnet ? "checked" : "")" @onclick="ToggleAvoidConvertToMagnet"></div>
+    </label>
+
+    <button class="settingsPage_saveButton" @onclick="Save"><i class="fa-solid fa-floppy-disk"></i></button>
+    <label class="settingsPage_versionLabel">v@_versionString
+        @if (_isUpdateAvailable)
+        {
+            <label class="settingsPage_versionLabel">
+                | <label class="settingsPage_versionLabel" @onclick="() => LibraryPage.OpenUrl(_updateUrl)"
+                         style="text-decoration: underline; cursor: pointer">
+                    Update
+                </label>
+            </label>
+        }
+        </label>
+</div>
+
+@code {
+    public static string _appLanguage;
+    public static string _appTheme;
+    public static string Username;
+    public static bool AddToStartup;
+    public static bool ShowLastRunTime;
+    public static bool ShowGameTitle;
+    public static bool AutoBackup;
+    public static bool AvoidConvertToMagnet;
+    static Version _version = Assembly.GetExecutingAssembly().GetName().Version;
+    static string _versionString = $"{_version.Major}.{_version.Minor} \"{Program._appCodeName}\"";
+    static Logger _logger = new Logger();
+    private bool _isUpdateAvailable = false;
+    private string _updateUrl = string.Empty;
+    
+    private string GOGStatus = string.Empty;
+    private string XatabStatus = string.Empty;
+    private string FitGirlStatus = string.Empty;
+
+    private string GOGStatusIcon => string.IsNullOrEmpty(GOGStatus) ? "" : GOGStatus;
+    private string XatabStatusIcon => string.IsNullOrEmpty(XatabStatus) ? "" : XatabStatus;
+    private string FitGirlStatusIcon => string.IsNullOrEmpty(FitGirlStatus) ? "" : FitGirlStatus;
+
+    private async Task CheckSources()
+    {
+        Toast.toast.ShowToast("Wait...", "info");
+        GOGStatus = await GOG.GetStatus() ? "fa-solid fa-circle-check" : "fa-solid fa-circle-xmark";
+        XatabStatus = await Xatab.GetStatus() ? "fa-solid fa-circle-check" : "fa-solid fa-circle-xmark";
+        FitGirlStatus = await FitGirl.GetStatus() ? "fa-solid fa-circle-check" : "fa-solid fa-circle-xmark";
+    }
+    
+    protected override async Task OnInitializedAsync()
+    {
+        var updateCheck = await AppHelper.NeedUpdate($"{_version.Major}.{_version.Minor}");
+        _isUpdateAvailable = updateCheck.updNeed;
+        _updateUrl = updateCheck.url;
+    }
+    
+    private static async Task MakeBackup()
+    {
+        Toast.toast.ShowToast("Backup made", "info");
+        await Backup.MakeBackupAsync();
+    }
+    private static async Task RestoreBackup()
+    {
+        Toast.toast.ShowToast("Backup restored", "info");
+        await Backup.ReadBackupAsync();
+    }
+    
+    public static async Task InitializeSettings()
+    {
+        var settings = await SettingsData.LoadFromJSON();
+        var addToStartup = settings.FirstOrDefault(s => s.SettingName == "AddToStartup");
+        AddToStartup = addToStartup != null ? (bool)addToStartup.Value : true;
+    
+        var lastRunTime = settings.FirstOrDefault(s => s.SettingName == "ShowLastRunTime");
+        ShowLastRunTime = lastRunTime != null ? (bool)lastRunTime.Value : true;
+
+        var gameTitle = settings.FirstOrDefault(s => s.SettingName == "ShowGameTitle");
+        ShowGameTitle = gameTitle != null ? (bool)gameTitle.Value : true;
+
+        var autobackup = settings.FirstOrDefault(s => s.SettingName == "AutoBackup");
+        AutoBackup = autobackup != null ? (bool)autobackup.Value : true; 
+
+        var appTheme = settings.FirstOrDefault(s => s.SettingName == "AppTheme");
+        _appTheme = appTheme != null ? (string)appTheme.Value : "Dionysus"; 
+        
+        var appLang = settings.FirstOrDefault(s => s.SettingName == "AppLanguage");
+        _appLanguage = appLang != null ? (string)appLang.Value : "en-US"; 
+        
+        _logger.Log(Logger.LogType.DEBUG, "Settings loaded");
+    }
+
+    private void ToggleAddToStartup() => AddToStartup = !AddToStartup;
+    private void ToggleShowLastRunTime() => ShowLastRunTime = !ShowLastRunTime;
+
+    private void ToggleShowGameTitle() => ShowGameTitle = !ShowGameTitle;
+    private void ToggleAutobackup() => AutoBackup = !AutoBackup;
+
+    private void ToggleAvoidConvertToMagnet() => AvoidConvertToMagnet = !AvoidConvertToMagnet;
+    
+    public static async Task Save()
+    {
+        
+        ProfileData.SaveJson();
+        if (AddToStartup && !AppHelper.AddedToStartup()) AppHelper.Logic(true);
+        else if(!AddToStartup)  AppHelper.Logic(false);
+        
+        var settings = new List<SettingsModel>
+        {
+            new SettingsModel { SettingName = "AddToStartup", Value = AddToStartup },
+            new SettingsModel { SettingName = "ShowGameTitle", Value = ShowGameTitle },
+            new SettingsModel { SettingName = "ShowLastRunTime", Value = ShowLastRunTime },
+            new SettingsModel { SettingName = "AutoBackup", Value = AutoBackup },
+            new SettingsModel { SettingName = "AvoidConvertToMagnet", Value = AvoidConvertToMagnet },
+            new SettingsModel { SettingName = "AppTheme", Value = _appTheme },
+            new SettingsModel { SettingName = "AppLanguage", Value = _appLanguage },
+        };
+        Toast.toast.ShowToast("Settings saved", "info");
+        _logger.Log(Logger.LogType.DEBUG, "Settings saved");
+        await SettingsData.SaveToJSON(settings);
+    }
+}

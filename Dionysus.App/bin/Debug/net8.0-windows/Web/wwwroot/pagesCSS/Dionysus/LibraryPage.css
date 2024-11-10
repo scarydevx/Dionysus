@@ -1,0 +1,314 @@
+html, body {
+    padding: 100px;
+    margin: 0 auto;
+    user-select: none;
+    background-color: var(--backgroundColor);
+}
+img {
+    pointer-events: none;
+}
+h1:focus {
+    outline: none;
+}
+
+a, .btn-link {
+    color: #0071c1;
+}
+
+.libraryPage_errorText{
+    text-align: center;
+    width: 100%;
+    color: var(--foregroundColor);
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.libraryPage_games-grid {
+    padding: 2rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1.5rem;
+}
+
+.libraryPage_game-card {
+    width: 100%;
+    height: 320px;
+    position: relative;
+    background-color: rgba(0, 0, 0, 0.6);
+    border-radius: var(--bgImageborderRadius);
+    border-color: var(--borderColor);
+    border-style: solid;
+    border-width: 1px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.libraryPage_game-card:hover {
+    transform: scale(1.03);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+}
+
+.libraryPage_game-image {
+    width: 100%;
+    height: 320px;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+.libraryPage_game-image::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(180deg, rgba(var(--bgImageOverlayColor), 0) 0%, rgba(var(--bgImageOverlayColor), 0) 10%,
+    rgba(var(--bgImageOverlayColor), 0.7) 50%, rgba(var(--bgImageOverlayColor), 0.9) 100%);
+    border-radius: var(--borderRadius);
+    z-index: 1;
+}
+
+.libraryPage_game-info {
+    position: absolute;
+    bottom: 0;
+    z-index: 2;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.libraryPage_game-title {
+    font-size: 1.1rem;
+    font-family: "JetBrains Mono", monospace;
+    color: var(--foregroundColor);
+    text-align: left;
+    text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 180px;
+}
+
+.libraryPage_game-tags {
+    display: flex;
+    gap: 0.3rem;
+    flex-wrap: wrap;
+}
+
+.libraryPage_tag {
+    font-family: "JetBrains Mono", monospace;
+    background-color: var(--headerColor);
+    color: var(--foregroundColor);
+    padding: 5px 12px;
+    border-radius: var(--borderRadius);
+    border-style: solid;
+    border-width: 1px;
+    font-size: 0.8rem;
+    border-color: var(--borderColor);
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.libraryPage_topRightContainer {
+    position: absolute;
+    flex-direction: column;
+    top: 7px;
+    right: 7px;
+    display: none;
+    gap: 0.3rem;
+    z-index: 2;
+
+}
+
+.libraryPage_game-card:hover .libraryPage_topRightContainer{
+    display: flex;
+}
+
+.libraryPage_button {
+    display: flex;
+    align-items: center; 
+    justify-content: center;
+    background-color: var(--headerColor);
+    color: var(--foregroundColor);
+    border-radius: var(--borderRadius);
+    border-style: solid;
+    border-color: var(--borderColor);
+    border-width: 0.2px;
+    padding: 0;
+    font-size: 12px;
+    height: 30px;
+    width: 30px;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.2s;
+    z-index: 100;
+}
+
+
+.libraryPage_button:hover {
+    background-color: var(--buttonHoverColor);
+    transform: scale(1.05);
+}
+
+.libraryPage_button:active {
+    transform: scale(0.97);
+}
+
+
+
+.edit-game-form-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    backdrop-filter: blur(3px);
+    justify-content: center;
+    z-index: 1002; 
+}
+
+.edit-game-form {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    max-width: 700px;
+    max-height: 80%;
+    width: 90%;
+    background-color: var(--headerColor);
+    padding: 20px;
+    border-radius: var(--borderRadius);
+    border: 0.2px solid var(--borderColor);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    text-align: center;
+    transform: translate(-50%, -50%);
+    z-index: 1003;
+    animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.edit-game-form input,
+.edit-game-form textarea {
+    font-family: "JetBrains Mono", monospace;
+    width: 97%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: var(--borderRadius);
+    border-style: solid;
+    border-color: var(--borderColor);
+    border-width: 0.2px;
+    background-color: var(--backgroundColor);
+    color: var(--foregroundColor);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    text-align: center;
+    transition: all 0.6s ease-in-out;
+}
+.edit-game-form input:focus,
+.edit-game-form textarea:focus{
+    outline: var(--borderColor) 0.3px solid;
+}
+.edit-game-form label {
+    color:  var(--foregroundColor);
+    margin-bottom: 10px;
+    display: block;
+}
+input::placeholder{
+    color: var(--placeholderColor);
+}
+
+.edit-game-form-button {
+    font-family: "JetBrains Mono", monospace;
+    background-color: var(--headerColor);
+    color: var(--foregroundColor);
+    width: 100px;
+    border-radius: var(--borderRadius);
+    border-style: solid;
+    border-color: var(--borderColor);
+    border-width: 0.2px;
+    padding: 10px;
+    font-size: 14px;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.edit-game-form-button:hover {
+    background-color: var(--buttonHoverColor);
+    transform: scale(1.03);
+}
+
+.edit-game-form-button:active{
+    transform: scale(0.97);
+}
+
+button:disabled,
+button[disabled]{
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.profile {
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    width: auto;
+    padding: 32px 35px 20px 50px;
+    max-width: 480px;
+}
+
+.profile-image {
+    width: 113px;
+    height: 113px;
+    border-radius: var(--borderRadius);
+    border: 1px solid var(--borderColor);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    transition: transform 0.3s ease;
+}
+
+.username {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 20px;
+    color: var(--foregroundColor);
+    font-weight: 600;
+}
+.profile-userinfo{
+    font-weight: bold;
+    font-size: 14px; 
+    color: var(--versionLabelFg);
+}
+
+.mainPage_saveButton{
+    font-family: "JetBrains Mono", monospace;
+    background-color: var(--saveButtonBg);
+    color: var(--saveButtonFg);
+    width: 100px;
+    padding: 10px;
+    border-radius: var(--borderRadius);
+    border-style: solid;
+    border-color: var(--borderColor);
+    border-width: 0.2px;
+    font-size: 14px;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.mainPage_saveButton:hover {
+    background-color: var(--saveButtonHoverBg);
+    transform: scale(1.01);
+}
+
+.mainPage_saveButton:active{
+    transform: scale(0.99);
+}

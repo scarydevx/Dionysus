@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<root>
+    <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <data name="ProfileData-GamesCount" xml:space="preserve">
+        <value>Ігор</value>
+    </data>
+    <data name="ProfileData-TotalPlayed" xml:space="preserve">
+        <value>Всього зіграно</value>
+    </data>
+    <data name="EditGameForm-TitlePlaceholder" xml:space="preserve">
+        <value>Введіть назву гри</value>
+    </data>
+    <data name="EditGameForm-TitleLabel" xml:space="preserve">
+        <value>Назва</value>
+    </data>
+    <data name="EditGameForm-CoverPlaceholder" xml:space="preserve">
+        <value>Посилання на зображення</value>
+    </data>
+    <data name="EditGameForm-CoverLabel" xml:space="preserve">
+        <value>Зображення</value>
+    </data>
+    <data name="EditGameForm-LocationPlaceholder" xml:space="preserve">
+        <value>Шлях до файлу</value>
+    </data>
+    <data name="EditGameForm-LocationLabel" xml:space="preserve">
+        <value>Шлях</value>
+    </data>
+    <data name="EditGameForm-LaunchOptionsLabel" xml:space="preserve">
+        <value>Параметри запуску</value>
+    </data>
+    <data name="EditGameForm-LaunchOptionsPlaceholder" xml:space="preserve">
+        <value>Зміна параметрів запуску</value>
+    </data>
+    <data name="MainPage-EmptyError" xml:space="preserve">
+        <value>Порожньо</value>
+    </data>
+    <data name="AddGameForm-TitlePlaceholder" xml:space="preserve">
+        <value>Навза (Англійською)</value>
+    </data>
+    <data name="AddGameForm-SelectorLabel" xml:space="preserve">
+        <value>Оберіть ".exe" файл</value>
+    </data>
+    <data name="GamesPage-SearchPanelPlaceholder" xml:space="preserve">
+        <value>Введіть назву гри...</value>
+    </data>
+    <data name="GamesPage-DownloadTitle" xml:space="preserve">
+        <value>Завантажити</value>
+    </data>
+    <data name="GamesPage-AddToLibTitle" xml:space="preserve">
+        <value>Додати до бібліотеки</value>
+    </data>
+    <data name="SettingsPage-SourcesLabel" xml:space="preserve">
+        <value>Джерела</value>
+    </data>
+    <data name="SettingsPage-ApplicationSeparator" xml:space="preserve">
+        <value>Застосунок</value>
+    </data>
+    <data name="SettingsPage-LibrarySeparator" xml:space="preserve">
+        <value>Бібліотека</value>
+    </data>
+    <data name="SettingsPage-ProfileSeparator" xml:space="preserve">
+        <value>Профіль</value>
+    </data>
+    <data name="SettingsPage-TorrentSeparator" xml:space="preserve">
+        <value>Торент</value>
+    </data>
+    <data name="SettingsPage-LanguageLabel" xml:space="preserve">
+        <value>Мова</value>
+    </data>
+    <data name="SettingsPage-ProfileImageLabel" xml:space="preserve">
+        <value>Фото</value>
+    </data>
+    <data name="SettingsPage-ThemeLabel" xml:space="preserve">
+        <value>Тема</value>
+    </data>
+    <data name="SettingsPage-UsernameLabel" xml:space="preserve">
+        <value>Нікнейм</value>
+    </data>
+    <data name="SettingsPage-AddToStartup" xml:space="preserve">
+        <value>Додати до автозапуску</value>
+    </data>
+    <data name="SettingsPage-AutoBackup" xml:space="preserve">
+        <value>Автоматичне резервування</value>
+    </data>
+    <data name="SettingsPage-MakeBackup" xml:space="preserve">
+        <value>Зробити резервну копію</value>
+    </data>
+    <data name="SettingsPage-RestoreBackup" xml:space="preserve">
+        <value>Відновити резервну копію</value>
+    </data>
+    <data name="SettingsPage-Setting1" xml:space="preserve">
+        <value>Показати посилання на сторінку вибраної гри</value>
+    </data>
+    <data name="SettingsPage-Setting2" xml:space="preserve">
+        <value>Показувати версію гри (не з усіма репаками працює)</value>
+    </data>
+    <data name="SettingsPage-Setting3" xml:space="preserve">
+        <value>Показувати дату запису торента (gog не працює)</value>
+    </data>
+    <data name="SettingsPage-Setting4" xml:space="preserve">
+        <value>Уникати перетворення файлу торента на магнітне посилання</value>
+    </data>
+    <data name="SettingsPage-ShowGameTitle" xml:space="preserve">
+        <value>Показати назву гри</value>
+    </data>
+    <data name="SettingsPage-UsernamePlaceholder" xml:space="preserve">
+        <value>Введіть нікнейм...</value>
+    </data>
+    <data name="SettingsPage-SelectImage" xml:space="preserve">
+        <value>Вибрати зображення</value>
+    </data>
+    <data name="SettingsPage_ShowLastRunTime" xml:space="preserve">
+        <value>Показати останній час виконання</value>
+    </data>
+    <data name="LibraryPage-ArchivedGame" xml:space="preserve">
+        <value>Архівна гра</value>
+    </data>
+    <data name="SettingsPage-CheckSources" xml:space="preserve">
+        <value>Перевірити</value>
+    </data>
+    <data name="HomePage-SortBy" xml:space="preserve">
+        <value>Сортувати за</value>
+    </data>
+</root>

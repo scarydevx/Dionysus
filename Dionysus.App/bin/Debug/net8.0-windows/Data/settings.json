@@ -1,0 +1,32 @@
+{
+  "Settings": [
+    {
+      "SettingName": "AddToStartup",
+      "Value": true
+    },
+    {
+      "SettingName": "ShowGameTitle",
+      "Value": true
+    },
+    {
+      "SettingName": "ShowLastRunTime",
+      "Value": true
+    },
+    {
+      "SettingName": "AutoBackup",
+      "Value": true
+    },
+    {
+      "SettingName": "AvoidConvertToMagnet",
+      "Value": false
+    },
+    {
+      "SettingName": "AppTheme",
+      "Value": "Dionysus"
+    },
+    {
+      "SettingName": "AppLanguage",
+      "Value": "en-US"
+    }
+  ]
+}

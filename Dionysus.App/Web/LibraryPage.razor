@@ -1,0 +1,388 @@
+@page "/library"
+@using System.Diagnostics
+@using System.Globalization
+@using System.Text.RegularExpressions
+@using Dionysus.App.Data
+@using Dionysus.App.Helpers
+@using Dionysus.App.Logger
+@using Dionysus.App.Models
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+<link href="https://fonts.cdnfonts.com/css/cascadia-code" rel="stylesheet">
+<Toast @ref="Toast.toast" />
+
+
+@{
+    Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(SettingsPage._appLanguage);
+}
+
+<div class="profile">
+    @if(!string.IsNullOrEmpty(ProfileData.Profile().Image)){
+        <img style="@(_currentGameId != -1 ? _onGameStyle : _defaultStyle)"
+             class="profile-image" src="@ProfileData.GetBase64Image(ProfileData.Profile().Image)"/>
+    }
+    <div style="flex-direction: column">
+        <span class="username">
+            @ProfileData.Profile().Username
+        </span><br/>
+        @if (_runnedGame != null)
+        {
+            <span class="profile-userinfo">@(_runnedGame?.Title)</span><br/>
+        }
+        <span class="profile-userinfo">@Localization.strings.ProfileData_GamesCount: @_gamesList.Count,</span>
+        <span class="profile-userinfo">
+            @Localization.strings.ProfileData_TotalPlayed: @ProfileData.GetTotalPlayTime().TotalHours.ToString("F0")h 
+            @ProfileData.GetTotalPlayTime().Minutes.ToString()m
+        </span>
+    </div>
+</div>
+
+@if (!_gamesList.Any())
+{
+    <h3 class="libraryPage_errorText">
+        @Localization.strings.MainPage_EmptyError.
+    </h3>
+}
+
+<div class="libraryPage_games-grid">
+    @foreach (var game in _gamesList.OrderByDescending(g => ParseTimeInfo(g.TimeInfo)))
+    {
+        <div class="libraryPage_game-card" style="@(game.Id == _currentGameId ? _onGameStyle : _defaultStyle)">
+            <div class="libraryPage_game-image" style="background-image: url('@game.ImageUrl');  @(GamesMonitor.GameIsDeletedFromDesktop(game) ? "opacity: 0.1" : "")"></div>
+            <div class="libraryPage_topRightContainer">
+                @if (_currentGameId != game.Id)
+                {
+                    @if (!GamesMonitor.GameIsDeletedFromDesktop(game))
+                    {
+                        <button class="libraryPage_button" @onclick="() => StartGame(game.Location, game)" style="color: #26b050"><i class="fa fa-play"></i></button>
+                    }
+                }
+                <button class="libraryPage_button" @onclick="() => ShowEditPanel(game.Id)"><i class="fa fa-pencil"></i></button>
+                <button class="libraryPage_button" @onclick="() => DeleteGame(game)" style="color: #e11d48"><i class="fa fa-trash-can"></i></button>
+            </div>
+            <div class="libraryPage_game-info">
+                @if (SettingsPage.ShowGameTitle)
+                {
+                    <h3 class="libraryPage_game-title" title="@game.Title">
+                        @game.Title
+                    </h3>   
+                }
+                @if (!string.IsNullOrEmpty(game.TimeInfo))
+                {
+                    <div class="homePage_game-tags">
+                        <span class="homePage_tag"><i class="fa-regular fa-clock"></i> @game.TimeInfo</span>
+                    </div>
+                }
+                @if (!string.IsNullOrEmpty(game.LastRun) && SettingsPage.ShowLastRunTime)
+                {
+                   <div class="homePage_game-tags">
+                         <span class="homePage_tag"><i class="fa-regular fa-calendar"></i> @game.LastRun</span>
+                   </div>
+                }
+            </div>
+            @if (GamesMonitor.GameIsDeletedFromDesktop(game))
+            {
+                <div class="homePage_game-tags" style="position: absolute; display: flex; left: 10px; top: 5px; z-index: 10">
+                        <span class="homePage_tag" title="@Localization.strings.LibraryPage_ArchivedGame">
+                            <i style="color: #ffc107" class="fa-solid fa-triangle-exclamation"></i>
+                        </span>
+                </div>   
+            }
+        </div>
+
+        @if (_currentEditGameId == game.Id)
+        {
+            <div class="edit-game-form-overlay">
+                <div class="edit-game-form">
+                    <div>
+                        <label>@Localization.strings.EditGameForm_CoverLabel:</label>
+                        <input type="text"  style="width: 88%" @bind="game.ImageUrl" placeholder="@Localization.strings.EditGameForm_CoverPlaceholder" required="required">
+                        <button class="edit-game-form-button" style="width: 45px" @onclick="() => OpenUrl(SteamGridDB._link)"><i class="fa-solid fa-globe"></i></button>
+                    </div>
+                    <div>
+                        <label>@Localization.strings.EditGameForm_LocationLabel:</label>
+                        <input style="width: 80%" type="text" @bind="game.Location" placeholder="@Localization.strings.EditGameForm_LocationPlaceholder" required="required">
+                        <button class="edit-game-form-button" style="width: 45px;"
+                                @onclick="() => SelectFileForEdit(game)">
+                            <i class="fa-solid fa-pencil"></i>
+                        </button>
+                        <button class="edit-game-form-button" style="width: 45px"
+                                disabled="@(!File.Exists(game.Location) || string.IsNullOrEmpty(game.Location))"
+                                @onclick="() => OpenFolder(game.Location)">
+                            <i class="fa-regular fa-folder-open"></i>
+                        </button>
+                    </div>
+                    <label>@Localization.strings.EditGameForm_LaunchOptionsLabel:</label>
+                    <input type="text" @bind="game.Arguments" placeholder="@Localization.strings.EditGameForm_LaunchOptionsPlaceholder" required="required">
+                    <button class="mainPage_saveButton" @onclick="() => SaveEdit(game.Id)"><i class="fa-solid fa-floppy-disk"></i></button>
+                    <button class="edit-game-form-button" @onclick="() => CancelEdit()"><i class="fa-solid fa-close"></i></button>
+                </div>
+            </div>
+        }
+    }
+</div>
+@code {
+    private int? _currentEditGameId = null;
+    private static string _errorText;
+    public static List<GameModel> _gamesList = GameData.GamesData.ParseGamesFromJSON().ToList();
+    static bool _showAddGameForm = false;
+    static GameModel _newGame = new GameModel();
+    static GameModel _runnedGame = null;
+    private static string _selectedFile;
+    private int previousGameId = -1;
+    static bool _playerPlaying = false;
+    private int _currentGameId = -1;
+    static string _defaultStyle = "";
+    static string _onGameStyle = "border: 2px solid #238636;";
+    static Logger _logger = new Logger();
+
+    public static TimeSpan ParseTimeInfo(string timeInfo)
+    {
+        if (string.IsNullOrWhiteSpace(timeInfo))
+        {
+            return TimeSpan.Zero;
+        }
+
+        timeInfo = timeInfo.Trim();
+
+        int hours = 0;
+        int minutes = 0;
+
+        var hourMatch = Regex.Match(timeInfo, @"(\d+)h");
+        if (hourMatch.Success)
+        {
+            hours = int.Parse(hourMatch.Groups[1].Value);
+        }
+
+        var minuteMatch = Regex.Match(timeInfo, @"(\d+)m");
+        if (minuteMatch.Success)
+        {
+            minutes = int.Parse(minuteMatch.Groups[1].Value);
+        }
+
+        return new TimeSpan(hours, minutes, 0);
+    }
+
+    private static void SelectFileForEdit(GameModel game)
+    {
+        using (OpenFileDialog openFileDialog = new OpenFileDialog())
+        {
+            var _prevLocation = game.Location;
+            openFileDialog.Filter = "Executable files (*.exe)|*.exe|All files (*.*)|*.*";
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                string fullPath = openFileDialog.FileName;
+                game.Location = fullPath;
+            }
+            else
+            {
+                game.Location = _prevLocation;
+            }
+        }
+    }
+
+    private static void SelectFile()
+    {
+        using (OpenFileDialog openFileDialog = new OpenFileDialog())
+        {
+            openFileDialog.Filter = "Executable files (*.exe)|*.exe|All files (*.*)|*.*";
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                string fullPath = openFileDialog.FileName;
+                _selectedFile = fullPath;
+                _newGame.Location = fullPath;
+            }
+            else
+            {
+                _selectedFile = null;
+            }
+        }
+    }
+
+    public static void OpenUrl(string url) => Process.Start("explorer", url);
+
+    public static void OpenFolder(string path)
+    {
+        if (File.Exists(path))
+        {
+            Process.Start("explorer.exe", $"/select,{path.Replace("/", @"\")}");
+        }
+        else
+        {
+            MessageBox.Show("File does not exist", "Error");
+        }
+    }
+
+    private void ShowEditPanel(int gameId)
+    {
+        _currentEditGameId = gameId;
+    }
+
+    private void SaveEdit(int gameId)
+    {
+        var game = _gamesList.FirstOrDefault(g => g.Id == gameId);
+        if (game != null)
+        {
+            GameData.GamesData.SaveToJSON(_gamesList);
+            Toast.toast.ShowToast("Game settings saved", "info");
+        }
+
+        _currentEditGameId = null;
+    }
+
+    private void CancelEdit()
+    {
+        _currentEditGameId = null;
+    }
+
+    private void StartGame(string _path, GameModel game)
+    {
+        try
+        {
+            Process firstProc = new Process();
+            firstProc.StartInfo.FileName = _path;
+            if (!string.IsNullOrEmpty(game.Arguments)) firstProc.StartInfo.Arguments = game.Arguments;
+            firstProc.StartInfo.WorkingDirectory = Path.GetDirectoryName(_path);
+            firstProc.EnableRaisingEvents = true;
+            firstProc.Start();
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(ex.Message);
+        }
+    }
+
+    static void ToggleForm() => _showAddGameForm = !_showAddGameForm;
+    
+    /*
+    public static async void AddGameAsync()
+    {
+        int _id = _gamesList.Any() ? _gamesList.Max(g => g.Id) + 1 : 1;
+        if (!string.IsNullOrEmpty(_selectedFile))
+        {
+            try
+            {
+                _gamesList.Add(new GameModel()
+                {
+                    Id = _id,
+                    ImageUrl = await SteamGridDB.GetGridUriHorizontal(_newGame.Title),
+                    Location = _newGame.Location,
+                    TimeInfo = "0h 0m",
+                    Title = _newGame.Title
+                });
+                _newGame = new GameModel();
+                _showAddGameForm = false;
+                _selectedFile = null;
+                await GameData.GamesData.SaveToJSON(_gamesList);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message, "Error");
+            }
+        }
+    }
+    */
+    
+    public static async void AddGameFromAnotherAsync(int _id, string _location, string _gameName)
+    {
+        try
+        {
+            _gamesList.Add(new GameModel()
+            {
+                Id = _id,
+                ImageUrl = await SteamGridDB.GetGridUriVertical(_gameName),
+                Location = _location,
+                TimeInfo = "0h 0m",
+                Title = _gameName.Replace("&#8211;", "-")
+                    .Replace("&#038;", "&")
+                    .Replace("&#8217;", "`")
+            });
+            _newGame = new GameModel();
+            _showAddGameForm = false;
+            _selectedFile = null;
+            await GameData.GamesData.SaveToJSON(_gamesList);
+            Toast.toast.ShowToast("Game successfully added", "info");
+        }
+        catch (Exception e)
+        {
+            MessageBox.Show(e.Message, "Error");
+        }
+    }
+
+
+    private void DeleteGame(GameModel gameToRemove)
+    {
+        if (MessageBox.Show("Are you sure you want to remove the game from list?", "Question", MessageBoxButtons.YesNo) == DialogResult.Yes)
+        {
+            _gamesList.Remove(gameToRemove);
+            GameData.GamesData.SaveToJSON(_gamesList);
+            Toast.toast.ShowToast("Game successfully deleted", "info");
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await UpdateAsync();
+    }
+
+    private async Task UpdateAsync()
+    {
+        GameModel _currentRunningGame = null;
+        var delay = 10000;
+        while (true)
+        {
+            try
+            {
+                var _game = GamesMonitor.GameFromListIsRunning(_gamesList);
+                if (_game.runningGame != null && _game.isRunning)
+                {
+                    if (_currentRunningGame == null || _currentRunningGame.Id != _game.runningGame.Id)
+                    {
+                        _logger.Log(Logger.LogType.DEBUG, $"{_game.runningGame.Title} running");
+                        _currentRunningGame = _game.runningGame;
+                        _runnedGame = _game.runningGame;
+                        _currentGameId = _game.runningGame.Id;
+                        
+                        _game.runningGame.LastRun = DateTime.Now.ToString("dd/MM/yyyy HH:mm");
+                        
+                        if (!GamesMonitor.isCounting)
+                        {
+                            GamesMonitor.isCounting = true;
+                            _ = Task.Run(() => GamesMonitor.CountPlayTime(_gamesList, _game.runningGame.Location));
+                        }
+                        delay = 3000;
+                    }
+                    await InvokeAsync(StateHasChanged);
+                }
+                else
+                {
+                    if (_currentRunningGame != null)
+                    {
+                        _logger.Log(Logger.LogType.DEBUG, $"Game closed");
+                        _currentGameId = -1;
+                        _runnedGame = null;
+                        _currentRunningGame = null;
+
+                        GamesMonitor.isCounting = false;
+                        
+                        if (SettingsPage.AutoBackup) await Backup.MakeBackupAsync();
+                        await InvokeAsync(StateHasChanged);
+                        delay = 10000;
+                    }
+                    await InvokeAsync(StateHasChanged);
+                }
+                
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+                
+                await Task.Delay(delay);
+            }
+            catch (Exception ex)
+            {
+                _logger.Log(Logger.LogType.ERROR, $"Error in UpdateAsync: {ex.Message}");
+                throw;
+            }
+        }
+    }
+}

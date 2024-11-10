@@ -1,0 +1,267 @@
+﻿@page "/"
+@using System.Diagnostics
+@using System.Globalization
+@using Dionysus.App.Data
+@using Dionysus.App.Interfaces
+@using Dionysus.App.Logger
+@using Dionysus.App.TorrentClient
+@using Dionysus.WebScrap
+@using Dionysus.WebScrap.FitGirlScrapper
+@using Dionysus.WebScrap.GOGScrapper
+@using Dionysus.WebScrap.Steam250
+@using Dionysus.WebScrap.XatabScrapper
+@using Microsoft.Extensions.DependencyInjection
+@inject NavigationManager NavigationManager
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    @{
+        Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(SettingsPage._appLanguage);
+    }
+</head>
+
+<Toast @ref="Toast.toast" />
+
+<div class="homePage_searchPanel">
+    <input class="homePage_input" @bind="searchText" placeholder="@Localization.strings.GamesPage_SearchPanelPlaceholder"/>
+
+    <button @onclick="Search" class="homePage_searchButton fa fa-magnifying-glass"></button>
+</div>
+
+@if (!string.IsNullOrWhiteSpace(_errorText))
+{
+
+    @if (_errorText == "Wait...")
+    {
+        <div class="homePage_loader-container">
+            <div class="homePage_loaderAnimation"></div>
+        </div>
+    }
+    else
+    {
+        <h3 class="homePage_errorText">@_errorText</h3>
+    }
+}
+
+<body>
+<div class="homePage_container">
+    <main class="homePage_main-content">
+        <div class="homePage_games-grid">
+            @if (_games != null && _games.Any())
+            {
+                @foreach (var game in _games.Select((game, index) => new { game, index }))
+                {
+                    <div class="homePage_game-card">
+                        <div class="homePage_game-image" style="background-image: url('@game.game.Cover')"></div>
+                        <div class="homePage_topRightContainer">
+                            <button class="homePage_button fa fa-download" @onclick="() => ShowDownloadPanel(game.index, game.game.Name)"
+                                    title="@Localization.strings.GamesPage_DownloadTitle"></button>
+                            <button class="homePage_button fa fa-plus" title="@Localization.strings.GamesPage_AddToLibTitle"
+                                    @onclick="() => AddGameToLib(game.game.Name)"></button>
+                        </div>
+                        <div class="homePage_game-info">
+                            <h3 class="homePage_game-title" title="@game.game.Name">
+                                @game.game.Name
+                            </h3>
+                            <div class="homePage_game-tags">
+                                @foreach (var tag in game.game.Tags)
+                                {
+                                    <span class="homePage_tag">@tag</span>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    @if (_selectedGameId == game.index)
+                    {
+                        
+                        <div class="download-game-form-overlay">
+                            <div class="download-game-form">
+                                <label class="game-name">@game.game.Name</label>
+                                
+                                @if (_repacks != null && _repacks.Any())
+                                {
+                                    <div class="repacks-list" style="height: 60vh">
+                                        @foreach (var repack in _repacks.OrderBy(repack => repack.Source))
+                                        {
+                                            <div class="repack-item" 
+                                                 @onclick="() => TorrentManager.DownloadTypeSelector(repack.Link, repack.DownloadLink)">
+                                                <div class="repack-header">
+                                                    <span class="repack-title" style="width: 80%;" title="@repack.Name">@repack.Name</span>
+                                                    <span class="repack-size">@repack.Size</span>
+                                                </div>
+                                                <div class="repack-details">
+                                                    <span class="repack-date">@repack.Date @(!string.IsNullOrEmpty(repack.Version) ? $"- v{@repack.Version}" : "")</span>
+                                                    <span class="repack-source">@repack.Source</span>
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                }
+                                else if (_isSearching)
+                                {
+                                    <div class="homePage_loader-container" style="margin-bottom: 15px">
+                                        <div class="homePage_loaderAnimation"></div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="no-repacks-message">
+                                        <span>No repacks found.</span>
+                                    </div>
+                                }
+
+                                <button class="download-game-form-button" @onclick="CloseDownloadPanel">
+                                    <i class="fa-solid fa-close"></i>
+                                </button>
+                            </div>
+                        </div>
+                    }
+                }
+            }
+        </div>
+    </main>
+</div>
+</body>
+</html>
+
+@code{
+    private static string _jsonPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "env.json");
+    private static string _selectedFile;
+    private static string _errorText;
+    private static string searchText;
+    private static bool _research = false;
+    private static List<Steam250SearchStruct> _games;
+    static Logger _logger = new Logger();
+    private List<IGameSearcher> _searchers = new List<IGameSearcher>
+    {
+        new GOGSearcher(),
+        new XatabSearcher(),
+        new FitGirlSearcher()
+    };
+    private int? _selectedGameId = null;
+
+    private async void ShowDownloadPanel(int gameId, string gameName)
+    {
+        await JSRuntime.InvokeVoidAsync("eval", "document.body.classList.add('no-scroll')");
+        _selectedGameId = gameId;
+        await SearchRepacks(gameName);
+    }
+
+    private void CloseDownloadPanel()
+    {
+        _selectedGameId = null;
+        JSRuntime.InvokeVoidAsync("eval", "document.body.classList.remove('no-scroll')");
+    }
+
+    private List<SearchGameInfoStruct> _repacks = new List<SearchGameInfoStruct>();
+    private bool _isSearching = false;
+    private async Task SearchRepacks(string gameName)
+    {
+        _isSearching = true;
+        _repacks.Clear();
+        var foundGames = new List<SearchGameInfoStruct>();
+        var alreadyFoundGameNames = new HashSet<string>();
+        StateHasChanged();
+
+        var searchTasks = _searchers.Select(async searcher =>
+        {
+            try
+            {
+                var startTime = DateTime.Now;
+                _logger.Log(Logger.LogType.DEBUG, $"Searcher {searcher.SourceName} started at {startTime}");
+                var searchResults = await searcher.Search(gameName.Replace("\u00ae", "").Replace("\u2122",""));
+                var endTime = DateTime.Now;
+                _logger.Log(Logger.LogType.DEBUG, $"Searcher {searcher.SourceName} finished at {endTime}. Duration: {(endTime - startTime).TotalSeconds} seconds");
+
+                if (searchResults != null && searchResults.Any())
+                {
+                    foreach (var game in searchResults)
+                    {
+                        if (!alreadyFoundGameNames.Contains(game.Name))
+                        {
+                            var tempGame = game;
+                            tempGame.Source = searcher.SourceName;
+                            foundGames.Add(tempGame);
+                            alreadyFoundGameNames.Add(game.Name);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Log(Logger.LogType.ERROR, $"Error in searcher {searcher.SourceName}: {ex.Message}");
+            }
+        }).ToList();
+
+        await Task.WhenAll(searchTasks);
+
+        _repacks = new List<SearchGameInfoStruct>(foundGames);
+        _isSearching = false;
+        StateHasChanged();
+
+        foundGames.Clear();
+        alreadyFoundGameNames.Clear();
+    }
+
+
+    private async Task Search()
+    {
+        _errorText = "Wait...";
+        StateHasChanged();
+
+        var _searchResults = await Steam250.GetSearchResponse(searchText + searchText[searchText.Length - 1]);
+
+        await Task.Run(() =>
+        {
+            _games = new List<Steam250SearchStruct>();
+
+            foreach (var game in _searchResults)
+            {
+                _games.Add(game);
+            }
+        });
+
+        _errorText = _games.Any() ? string.Empty : "Not Found.";
+        StateHasChanged();
+    }
+
+    private async void AddGameToLib(string _gameName)
+    {
+        var _json = GameData.GamesData.ParseGamesFromJSON();
+        SelectFile();
+        if (!string.IsNullOrEmpty(_selectedFile))
+        {
+            try
+            {
+                var _lastId = _json.Any() ? _json.Select(id => id.Id).Last() : 0;
+
+                LibraryPage.AddGameFromAnotherAsync(_lastId + 1, _selectedFile, _gameName);
+                Toast.toast.ShowToast("Game successfully added", "info");
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex);
+            }   
+        }
+    }
+    
+    private void SelectFile()
+    {
+        using (OpenFileDialog openFileDialog = new OpenFileDialog())
+        {
+            openFileDialog.Filter = "Executable files (*.exe)|*.exe|All files (*.*)|*.*";
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                _selectedFile = openFileDialog.FileName;
+            }
+        }
+    }
+    
+}
