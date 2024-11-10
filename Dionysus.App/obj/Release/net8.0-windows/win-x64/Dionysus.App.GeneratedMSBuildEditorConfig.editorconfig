@@ -1,0 +1,53 @@
+is_global = true
+build_property.ApplicationManifest = 
+build_property.StartupObject = 
+build_property.ApplicationDefaultFont = 
+build_property.ApplicationHighDpiMode = 
+build_property.ApplicationUseCompatibleTextRendering = 
+build_property.ApplicationVisualStyles = 
+build_property.TargetFramework = net8.0-windows
+build_property.TargetPlatformMinVersion = 7.0
+build_property.UsingMicrosoftNETSdkWeb = 
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = 
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property.RootNamespace = Dionysus
+build_property.RootNamespace = Dionysus
+build_property.ProjectDir = C:\c# projects\Dionysus\src\Dionysus.App\
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 
+build_property.RazorLangVersion = 8.0
+build_property.SupportLocalizedComponentNames = 
+build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+build_property.MSBuildProjectDirectory = C:\c# projects\Dionysus\src\Dionysus.App
+build_property._RazorSourceGeneratorDebug = 
+
+[C:/c\# projects/Dionysus/src/Dionysus.App/Web/App.razor]
+build_metadata.AdditionalFiles.TargetPath = V2ViXEFwcC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/c\# projects/Dionysus/src/Dionysus.App/Web/HomePage.razor]
+build_metadata.AdditionalFiles.TargetPath = V2ViXEhvbWVQYWdlLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/c\# projects/Dionysus/src/Dionysus.App/Web/LibraryPage.razor]
+build_metadata.AdditionalFiles.TargetPath = V2ViXExpYnJhcnlQYWdlLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/c\# projects/Dionysus/src/Dionysus.App/Web/MainLayout.razor]
+build_metadata.AdditionalFiles.TargetPath = V2ViXE1haW5MYXlvdXQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/c\# projects/Dionysus/src/Dionysus.App/Web/SettingsPage.razor]
+build_metadata.AdditionalFiles.TargetPath = V2ViXFNldHRpbmdzUGFnZS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/c\# projects/Dionysus/src/Dionysus.App/Web/Toast.razor]
+build_metadata.AdditionalFiles.TargetPath = V2ViXFRvYXN0LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/c\# projects/Dionysus/src/Dionysus.App/Web/_Imports.razor]
+build_metadata.AdditionalFiles.TargetPath = V2ViXF9JbXBvcnRzLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 

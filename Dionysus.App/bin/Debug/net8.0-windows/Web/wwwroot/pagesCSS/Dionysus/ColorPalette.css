@@ -1,10 +1,10 @@
 :root{
-    --backgroundColor: #181818;
-    --foregroundColor: #e0e0e0;
+    --backgroundColor: #0d1016;
+    --foregroundColor: #f1f7fc;
     --placeholderColor: #606060;
-    --buttonHoverColor: #252525;
-    --borderColor: #3a3a3a;
-    --headerColor: #101010;
+    --buttonHoverColor: #262c36;
+    --borderColor: #212931;
+    --headerColor: #010508;
     --borderRadius: 6px;
     --bgImageborderRadius: 8px; /* borderRadius + 2 */
     --bgImageOverlayColor: 14, 14, 14;

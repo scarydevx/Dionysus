@@ -1,0 +1,174 @@
+html, body {
+    padding: 100px;
+    margin: 0 auto;
+    user-select: none;
+    background-color: var(--backgroundColor);
+    color: white;
+
+
+}
+
+.settingsPage_panel {
+    max-width: 900px;
+    text-align: center;
+    justify-content: center;
+    display: flex;
+    margin: 0 auto;
+    flex-direction: column;
+    padding: 35px 30px 30px 30px;
+}
+
+.settingsPage_settingLabel {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 14px;
+    color: var(--foregroundColor);
+    background-color: var(--headerColor);
+    padding: 16px;
+    border-radius: var(--borderRadius);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--borderColor);
+}
+
+.settingsPage_settingLabel span {
+    flex-grow: 1;
+    text-align: left;
+}
+
+.settingsPage_custom-checkbox {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border-radius: var(--borderRadius);
+    background-color: var(--headerColor);
+    border: 2px solid var(--borderColor);
+    position: relative;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    cursor: pointer;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.settingsPage_custom-checkbox.checked {
+    background-color: var(--checkBoxCheckedBgColor);
+    border-color: var(--checkBoxCheckedBgColor);
+}
+
+.settingsPage_custom-checkbox::after {
+    content: '\f00c';
+    font-family: 'FontAwesome';
+    font-size: 14px;
+    color: var(--checkBoxCheckedFgColor);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.settingsPage_custom-checkbox.checked::after {
+    opacity: 1;
+}
+
+.settingsPage_saveButton {
+    font-family: "JetBrains Mono", monospace;
+    background-color: var(--saveButtonBg);
+    color: var(--saveButtonFg);
+    width: 45px;
+    padding: 10px;
+    border-radius: var(--borderRadius);
+    border-style: solid;
+    border-color: var(--borderColor);
+    border-width: 0.2px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+    position: fixed; 
+    right: 10px;
+    bottom: 10px; 
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+}
+
+.settingsPage_saveButton:hover {
+    background-color: var(--saveButtonHoverBg);
+    transform: scale(1.01);
+}
+
+.settingsPage_saveButton:active {
+    transform: scale(0.99);
+}
+
+.settingsPage_versionLabel{
+    font-family: "JetBrains Mono", monospace;
+    margin-top: 10px;
+    font-weight: bold;
+    font-size: 14px;
+    color: var(--versionLabelFg);
+}
+
+.settingsPage_button {
+    font-family: "JetBrains Mono", monospace;
+    background-color: var(--headerColor);
+    color: var(--foregroundColor);
+    padding: 10px;
+    border-radius: var(--borderRadius);
+    border-style: solid;
+    border-color: var(--borderColor);
+    border-width: 0.2px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    width: 100%;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+.settingsPage_button:hover {
+    background-color: var(--buttonHoverColor);
+    transform: scale(1.01);
+}
+.settingsPage_button.input:focus{
+    outline: var(--borderColor) 0.3px solid;
+}
+.settingsPage_button.input:hover{
+    transform: scale(1);
+    cursor: text;
+}
+
+.settingsPage_button.selector{
+    width: 20%;
+    padding: 8px;
+    font-size: 13px;
+    text-align-last: center;
+    appearance: none;
+}
+.settingsPage_button.selector:focus{
+    outline: var(--borderColor) 0.3px solid;
+}
+.settingsPage_button.selector:hover{
+    transform: scale(1);
+    cursor: pointer;
+}
+
+.settingsPage_button:active {
+    transform: scale(0.99);
+}
+
+
+.settingsPage_separator {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 14px;
+    width: 100%;
+    max-width: 200px;
+    color: var(--foregroundColor);
+    padding: 5px;
+    background-color: var(--headerColor);
+    height: auto;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    margin: 0 auto 20px;
+    border-radius: var(--borderRadius);
+    border: 1px solid var(--borderColor);
+}

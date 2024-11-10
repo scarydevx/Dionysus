@@ -92,3 +92,4 @@ C:\c# projects\Dionysus\src\Dionysus.App\obj\Debug\net8.0-windows\refint\Dionysu
 C:\c# projects\Dionysus\src\Dionysus.App\obj\Debug\net8.0-windows\Dionysus.pdb
 C:\c# projects\Dionysus\src\Dionysus.App\obj\Debug\net8.0-windows\Dionysus.App.genruntimeconfig.cache
 C:\c# projects\Dionysus\src\Dionysus.App\obj\Debug\net8.0-windows\ref\Dionysus.dll
+C:\c# projects\Dionysus\src\Dionysus.App\obj\Debug\net8.0-windows\Dionysus.App.sourcelink.json
