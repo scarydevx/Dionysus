@@ -70,5 +70,14 @@
     "Location": "D:\\SteamLibrary\\steamapps\\common\\Farlight 84\\WindowsClient\\SolarlandClient.exe",
     "Arguments": null,
     "LastRun": null
+  },
+  {
+    "Id": 9,
+    "Title": "Counter-Strike: Source",
+    "TimeInfo": "0h 0m",
+    "ImageUrl": "https://cdn2.steamgriddb.com/grid/68addc821b387ab5cc91c846b627a586.png",
+    "Location": "C:\\CSSv34_ClientMod\\CMLauncher.exe",
+    "Arguments": null,
+    "LastRun": null
   }
 ]
